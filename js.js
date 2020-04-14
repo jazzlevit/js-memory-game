@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
         for (i = 0; i < cardArray.length; i++) {
             let card = document.createElement('img');
             card.setAttribute('src', defaultCardPath);
-            card.setAttribute('class', 'col-md-3 border');
+            card.setAttribute('class', 'col border');
             card.setAttribute('data-id', i);
 
             card.addEventListener('click', flipCard);
@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // count all attempts
         attempts++;
 
-        if (chosenCards[0].name === chosenCards[1].name) {
+        if (chosenCards[0].name === chosenCards[1].name && chosenOneId !== chosenTwoId) {
             // alert('Молодец');
             cards[chosenOneId].setAttribute('style', 'visibility:hidden');
             cards[chosenTwoId].setAttribute('style', 'visibility:hidden');
@@ -100,7 +100,9 @@ document.addEventListener('DOMContentLoaded', () => {
     function displayResults() {
         //display result
         let needsToWon = cardArray.length / 2;
+
         resultDisplay.innerText = cardsWon + ' / ' + needsToWon;
+
         if (cardArray.length / 2 === cardsWon) {
             resultDisplay.innerText = `Победа! ${attempts} попыток`;
             finished();
@@ -109,17 +111,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // flip your card
     function flipCard() {
-        const cardId = this.getAttribute('data-id');
+        if (chosenCards.length < 2) {
 
-        // push to chosen
-        chosenCards.push(cardArray[cardId]);
-        chosenCardIds.push(cardId);
+            const cardId = this.getAttribute('data-id');
 
-        // update image
-        this.setAttribute('src', `images/${cardArray[cardId]['image']}`);
+            // push to chosen
+            chosenCards.push(cardArray[cardId]);
+            chosenCardIds.push(cardId);
 
-        if (chosenCards.length === 2) {
-            setTimeout(() => checkMatches(), 500);
+            // update image
+            this.setAttribute('src', `images/${cardArray[cardId]['image']}`);
+
+            if (chosenCards.length === 2) {
+                setTimeout(() => checkMatches(), 500);
+            }
         }
     }
 
