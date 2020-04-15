@@ -5,8 +5,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const grid = document.getElementById('grid');
     const resultDisplay = document.getElementById('result');
 
-    let chosenCards = [];
-    let chosenCardIds = [];
+    let cardsChosen = [];
+    let cardChosenIds = [];
     let cardsWon = 0;
     let attempts = 0;
 
@@ -45,8 +45,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function createBoard() {
-        chosenCards = [];
-        chosenCardIds = [];
+        cardsChosen = [];
+        cardChosenIds = [];
         cardsWon = 0;
         attempts = 0;
 
@@ -67,19 +67,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
             grid.appendChild(card);
         }
+
     }
 
     // check for matches
     function checkMatches() {
         let cards = document.getElementsByTagName('img');
 
-        const chosenOneId = chosenCardIds[0];
-        const chosenTwoId = chosenCardIds[1];
+        const chosenOneId = cardChosenIds[0];
+        const chosenTwoId = cardChosenIds[1];
 
         // count all attempts
         attempts++;
 
-        if (chosenCards[0].name === chosenCards[1].name && chosenOneId !== chosenTwoId) {
+        if (cardsChosen[0].name === cardsChosen[1].name && chosenOneId !== chosenTwoId) {
             // alert('Молодец');
             cards[chosenOneId].setAttribute('style', 'visibility:hidden');
             cards[chosenTwoId].setAttribute('style', 'visibility:hidden');
@@ -91,8 +92,8 @@ document.addEventListener('DOMContentLoaded', () => {
             cards[chosenTwoId].setAttribute('src', defaultCardPath);
         }
 
-        chosenCards = [];
-        chosenCardIds = [];
+        cardsChosen = [];
+        cardChosenIds = [];
 
         displayResults();
     }
@@ -104,7 +105,6 @@ document.addEventListener('DOMContentLoaded', () => {
         resultDisplay.innerText = cardsWon + ' / ' + needsToWon;
 
         if (cardArray.length / 2 === cardsWon) {
-            resultDisplay.innerText = `Победа! ${attempts} попыток`;
             finished();
         }
     }
@@ -113,23 +113,23 @@ document.addEventListener('DOMContentLoaded', () => {
     function flipCard() {
 
         // Do not execute again if you already has two open card
-        if (chosenCards.length < 2) {
+        if (cardsChosen.length < 2) {
 
             const cardId = this.getAttribute('data-id');
 
             // stop when you flip the same card twice
-            if (chosenCardIds.includes(cardId)) {
+            if (cardChosenIds.includes(cardId)) {
                 return;
             }
 
             // push to chosen
-            chosenCards.push(cardArray[cardId]);
-            chosenCardIds.push(cardId);
+            cardsChosen.push(cardArray[cardId]);
+            cardChosenIds.push(cardId);
 
             // update image
             this.setAttribute('src', `images/${cardArray[cardId]['image']}`);
 
-            if (chosenCards.length === 2) {
+            if (cardsChosen.length === 2) {
                 setTimeout(() => checkMatches(), 500);
             }
         }
@@ -137,18 +137,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     function finished() {
-        const wrapper = document.createElement('div');
-        wrapper.setAttribute('class', 'text-center')
 
-        const btn = document.createElement('btn');
-        btn.innerText = 'Начать заново?';
-        btn.setAttribute('class', 'btn btn-lg btn-success');
-        btn.addEventListener('click', createBoard);
+        const tagButton = document.createElement('btn');
+        const tagP = document.createElement('p');
 
+        tagButton.innerText = 'Начать заново';
+        tagButton.setAttribute('class', 'btn btn-lg btn-success');
+        tagButton.addEventListener('click', createBoard);
+
+        tagP.innerText =`Победа! ${attempts} попыток`;
+
+        // creal previous data
         clearGrid();
+        resultDisplay.innerText = '';
 
-        wrapper.appendChild(btn);
-        grid.appendChild(wrapper);
+        resultDisplay.appendChild(tagP);
+        resultDisplay.appendChild(tagButton);
     }
 
     function clearGrid() {
