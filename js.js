@@ -111,9 +111,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // flip your card
     function flipCard() {
+
+        // Do not execute again if you already has two open card
         if (chosenCards.length < 2) {
 
             const cardId = this.getAttribute('data-id');
+
+            // stop when you flip the same card twice
+            if (chosenCardIds.includes(cardId)) {
+                return;
+            }
 
             // push to chosen
             chosenCards.push(cardArray[cardId]);
